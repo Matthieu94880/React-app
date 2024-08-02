@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useFetch } from '../utils/hooks';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../utils/style/colors';
@@ -30,54 +31,39 @@ const LinkWrapper = styled.div`
   }
 `;
 
+const ErrorMsg = styled.span`
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+  text-size: 2rem;
+`;
+
 function Survey() {
   const { questionNumber } = useParams();
   const questionNumberInt = parseInt(questionNumber);
   const prevQuestionNumber =
     questionNumberInt === 1 ? 1 : questionNumberInt - 1;
   const nextQuestionNumber = questionNumberInt + 1;
-  const [surveyData, setSurveyData] = useState({});
-  const [isDataLoading, setDataLoading] = useState(false);
+  const { data, isLoading, error } = useFetch(`http://localhost:8000/survey`);
+  const { surveyData } = data;
 
-  // Cette syntaxe permet aussi bien de faire des calls API.
-  // Mais pour utiliser await dans une fonction, il faut que celle-ci soit async (pour asynchrone).
-  // Comme la fonction passée à useEffect ne peut pas être asynchrone,
-  // il faut utiliser une fonction qui est appelée dans useEffect et déclarée en dehors, comme ici 👇.
-  // Essayez de commenter le code créé dans le chapitre et de décommenter fetchData pour voir.
-
-  // async function fetchData() {
-  //   try {
-  //     const response = await fetch(`http://localhost:8000/survey`)
-  //     const { surveyData } = await response.json()
-  //     setSurveyData(surveyData)
-  //   } catch (error) {
-  // console.log('===== error =====', error)
-  // setError(true)
-  //   }
-  // }
-
-  useEffect(() => {
-    // fetchData()
-    setDataLoading(true);
-    fetch(`http://localhost:8000/survey`).then((response) =>
-      response.json().then(({ surveyData }) => {
-        setSurveyData(surveyData);
-        setDataLoading(false);
-      })
-    );
-  }, []);
+  if (error) {
+    return <ErrorMsg>Il y a un problème⚡</ErrorMsg>;
+  }
 
   return (
     <SurveyContainer>
       <QuestionTitle>Question {questionNumber}</QuestionTitle>
-      {isDataLoading ? (
+      {isLoading ? (
         <Loader />
       ) : (
-        <QuestionContent>{surveyData[questionNumber]}</QuestionContent>
+        <QuestionContent>
+          {surveyData && surveyData[questionNumber]}
+        </QuestionContent>
       )}
       <LinkWrapper>
         <Link to={`/survey/${prevQuestionNumber}`}>Précédent</Link>
-        {surveyData[questionNumberInt + 1] ? (
+        {surveyData && surveyData[questionNumberInt + 1] ? (
           <Link to={`/survey/${nextQuestionNumber}`}>Suivant</Link>
         ) : (
           <Link to="/results">Résultats</Link>
