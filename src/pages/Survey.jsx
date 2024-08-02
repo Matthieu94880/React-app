@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useFetch } from '../utils/hooks';
+import { useFetch } from '../utils/hooks/UseFetch';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import colors from '../utils/style/colors';

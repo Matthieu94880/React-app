@@ -9,7 +9,7 @@ import Freelances from './pages/Freelances';
 import Results from './pages/Results';
 import Footer from './components/Footer';
 import GlobalStyle from './utils/style/GlobalStyle';
-import { ThemeProvider } from './utils/context/theme';
+import { ThemeProvider } from './utils/context/Theme';
 
 ReactDOM.render(
   <React.StrictMode>
