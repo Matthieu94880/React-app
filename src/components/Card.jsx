@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import colors from '../utils/style/colors';
 import DefaultPicture from '../assets/profile.png';
 
-console.log('toto');
-
 const CardLabel = styled.span`
   color: #5843e4;
   font-size: 22px;
